@@ -64,40 +64,46 @@ function removeChildren(parent) {
 }
 
 var seconds = 20;
+var timerRunning = true;
 function quizTimer() {
         // Create display of timer
-    var timerElement = document.createElement("p");
-    timerElement.setAttribute("style", "text-align: end;")
-    timerElement.textContent = `You have ${seconds} seconds left!!`;
-    document.body.prepend(timerElement);
-    // Set timer with setInterval()
-    var timer = setInterval(() => {
-        if (seconds > 1) {
-            seconds--;
-            timerElement.textContent = `You have ${seconds} seconds left!!`;
-        } else {
-            // Clear page
-            removeChildren(document.body);
-            // Display FAILED page
-            var failed = document.createElement("p");
-            failed.setAttribute("style", "font-size: 100px; color: red; text-align: center;")
-            failed.innerHTML = "FAILED!<br>";
-            document.body.appendChild(failed);
-            
-            var tryAgain = document.createElement("button");
-            tryAgain.setAttribute("class", "btn")
-            tryAgain.setAttribute("onClick", "window.location.reload();")
-            tryAgain.textContent = "Try Again";
-            failed.appendChild(tryAgain);
-            clearInterval(timer)
-        }
-    }, 1000);
+        var timerElement = document.createElement("p");
+        timerElement.setAttribute("style", "text-align: end;")
+        timerElement.textContent = `You have ${seconds} seconds left!!`;
+        document.body.prepend(timerElement);
+        // Set timer with setInterval()
+        var timer = setInterval(() => {
+            if (timerRunning) {
+                if (seconds > 1) {
+                    seconds--;
+                    timerElement.textContent = `You have ${seconds} seconds left!!`;
+                } else {
+                    // Clear page
+                    removeChildren(document.body);
+                    // Display FAILED page
+                    var failed = document.createElement("p");
+                    failed.setAttribute("style", "font-size: 100px; color: red; text-align: center;")
+                    failed.innerHTML = "FAILED!<br>";
+                    document.body.appendChild(failed);
+                    
+                    var tryAgain = document.createElement("button");
+                    tryAgain.setAttribute("class", "btn")
+                    tryAgain.setAttribute("onClick", "window.location.reload();")
+                    tryAgain.textContent = "Try Again";
+                    failed.appendChild(tryAgain);
+                    clearInterval(timer)
+                }
+            } else {
+                clearInterval(timer);
+            }
+        }, 1000);
 }     
 
 var questionIndex = 0;
 
 function loadNext() {
     if (questionIndex >= questionArray.length) {
+        timerRunning = false;
         // Clear page of elements inside container
         var container = document.querySelector(".container")
         removeChildren(container);
@@ -138,9 +144,12 @@ function evalAnswer(event) {
     // get value of button from event
     var buttonId = event.target.id;
     var container = document.querySelector(".container");
+        // TODO!!!! Refactor this so it is loaded in invisibly, then shown/filled on each click
+    
         var hr = document.createElement("hr");
         container.appendChild(hr);
         var correct = document.createElement("p");
+        correct.setAttribute("class", "textCenter")
         container.appendChild(correct);
     // Check if button clicked is the correct answer
     if (questionArray[questionIndex][buttonId][1]) {
