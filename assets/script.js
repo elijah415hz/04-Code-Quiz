@@ -63,35 +63,36 @@ function removeChildren(parent) {
     }
 }
 
-var seconds = 2;
-function quizTimer(action) {
-    if (action === "start") {
-        var timerElement = document.createElement("p");
-        timerElement.setAttribute("style", "text-align: end;")
-        timerElement.textContent = `You have ${seconds} seconds left!!`;
-        document.body.prepend(timerElement);
-        var timer = setInterval(() => {
-            if (seconds > 0) {
-                seconds--;
-                timerElement.textContent = `You have ${seconds} seconds left!!`;
-            } else {
-                removeChildren(document.body);
-                
-                var failed = document.createElement("p");
-                failed.setAttribute("style", "font-size: 100px; color: red; text-align: center;")
-                failed.innerHTML = "FAILED!<br>";
-                document.body.appendChild(failed);
-                
-                var tryAgain = document.createElement("button");
-                tryAgain.setAttribute("class", "btn")
-                tryAgain.setAttribute("onClick", "window.location.reload();")
-                tryAgain.textContent = "Try Again";
-                failed.appendChild(tryAgain);
-            }
-        }, 1000);
-    }
-    
-}
+var seconds = 20;
+function quizTimer() {
+        // Create display of timer
+    var timerElement = document.createElement("p");
+    timerElement.setAttribute("style", "text-align: end;")
+    timerElement.textContent = `You have ${seconds} seconds left!!`;
+    document.body.prepend(timerElement);
+    // Set timer with setInterval()
+    var timer = setInterval(() => {
+        if (seconds > 1) {
+            seconds--;
+            timerElement.textContent = `You have ${seconds} seconds left!!`;
+        } else {
+            // Clear page
+            removeChildren(document.body);
+            // Display FAILED page
+            var failed = document.createElement("p");
+            failed.setAttribute("style", "font-size: 100px; color: red; text-align: center;")
+            failed.innerHTML = "FAILED!<br>";
+            document.body.appendChild(failed);
+            
+            var tryAgain = document.createElement("button");
+            tryAgain.setAttribute("class", "btn")
+            tryAgain.setAttribute("onClick", "window.location.reload();")
+            tryAgain.textContent = "Try Again";
+            failed.appendChild(tryAgain);
+            clearInterval(timer)
+        }
+    }, 1000);
+}     
 
 var questionIndex = 0;
 
@@ -136,17 +137,36 @@ function loadNext() {
 function evalAnswer(event) {
     // get value of button from event
     var buttonId = event.target.id;
+    var container = document.querySelector(".container");
+        var hr = document.createElement("hr");
+        container.appendChild(hr);
+        var correct = document.createElement("p");
+        container.appendChild(correct);
     // Check if button clicked is the correct answer
     if (questionArray[questionIndex][buttonId][1]) {
-        // Play Sound
+        // Load success sound
+        var audio = new Audio('assets/success.mp3');
+        correct.textContent = "Correct!";
+        container.appendChild(correct);
         // Display correct with timout
+        
         console.log("correct!");
     } else {
-        // Play Sound
+        // Load failure sound
+        var audio = new Audio('assets/failure.mp3');
+        correct.textContent = "Incorrect!";
+        
         // subtract 10 seconds
         // Display incorrect with timeout
         console.log("incorrect!")
     }
+    // Remove elements after 1 second
+    setTimeout(() => {
+        hr.remove();
+        correct.remove();
+    }, 1000);
+    // play sound
+    audio.play();
     questionIndex++;
     // call loadNext
     loadNext()
