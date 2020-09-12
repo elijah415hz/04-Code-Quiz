@@ -62,6 +62,7 @@ function removeChildren(parent) {
     }
 }
 
+var seconds = 60;
 function quizTimer(action) {
     // action can be start, stop, or subtract
     // if action === "start" etc
@@ -70,9 +71,31 @@ function quizTimer(action) {
 var questionIndex = 0;
 
 function loadNext() {
-    // if (questionIndex >= questionArr.length) {
-        // load final page
-    // }
+    if (questionIndex >= questionArray.length) {
+        // Clear page of elements inside container
+        var container = document.querySelector(".container")
+        removeChildren(container);
+        // Add header "All done!"
+        var header = document.createElement("h1");
+        header.textContent = "All done!";
+        container.appendChild(header);
+        // Add p
+        var p = document.createElement("p");
+        p.innerHTML = `Your final score is ${seconds}!`
+        container.appendChild(p);
+        // Add initals input field
+        var initials = document.createElement("input");
+        initials.setAttribute("type", "text");
+        initials.setAttribute("placeholder", "Enter your initials");
+        container.appendChild(initials);
+        // Add submit Button
+        var submitBtn = document.createElement("button");
+        submitBtn.setAttribute("class", "btn");
+        submitBtn.textContent = "Submit";
+        container.appendChild(submitBtn);
+
+
+    } else {
     // Load in values for question header and 4 buttons. Use an array of objects. Object.keys(object) will give the keys
     var content = questionArray[questionIndex];
     document.querySelector("h1").textContent = content.question;
@@ -82,24 +105,26 @@ function loadNext() {
     // Set which button is correct. Correct/incorrect stored in key values. Set class?
     // On any button press call evalAnswer()
     // Increment questionIndex
+    }
 }
 
 function evalAnswer(event) {
     // get value of button from event
     var buttonId = event.target.id;
-    // value either set to correct/incorrect or grab it from class
+    // Check if button clicked is the correct answer
     if (questionArray[questionIndex][buttonId][1]) {
+        // Play Sound
         console.log("correct!");
     } else {
+        // Play Sound
+        // subtract 10 seconds
         console.log("incorrect!")
     }
-    // if incorrect subtract 10 seconds from timer
     questionIndex++;
     // call loadNext
     loadNext()
 }
 
-// evalAnswer(questionArray[0])
 
 // Add event listener for Start Quiz
 startBtn.addEventListener("click", startQuiz)

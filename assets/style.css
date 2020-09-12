@@ -28,10 +28,16 @@ p {
     font-size: 20px;
     border-radius: 5px;
     cursor: pointer;
+    margin: 2px;
 }
 
 .block {
     display: block;
+}
+
+input {
+    font-size: 20px;
+    background-color: lightgray;
 }
 
 @media (max-width: 576px) {
