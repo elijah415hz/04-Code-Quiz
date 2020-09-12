@@ -38,6 +38,7 @@ p {
 input {
     font-size: 20px;
     background-color: lightgray;
+    
 }
 
 @media (max-width: 576px) {

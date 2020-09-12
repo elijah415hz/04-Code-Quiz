@@ -53,7 +53,8 @@ function startQuiz() {
 
     // Call loadNext() to load questions.
     loadNext();
-    // call quizTimer(start)
+    // start timer
+    quizTimer("start")
 }
 
 function removeChildren(parent) {
@@ -62,10 +63,34 @@ function removeChildren(parent) {
     }
 }
 
-var seconds = 60;
+var seconds = 2;
 function quizTimer(action) {
-    // action can be start, stop, or subtract
-    // if action === "start" etc
+    if (action === "start") {
+        var timerElement = document.createElement("p");
+        timerElement.setAttribute("style", "text-align: end;")
+        timerElement.textContent = `You have ${seconds} seconds left!!`;
+        document.body.prepend(timerElement);
+        var timer = setInterval(() => {
+            if (seconds > 0) {
+                seconds--;
+                timerElement.textContent = `You have ${seconds} seconds left!!`;
+            } else {
+                removeChildren(document.body);
+                
+                var failed = document.createElement("p");
+                failed.setAttribute("style", "font-size: 100px; color: red; text-align: center;")
+                failed.innerHTML = "FAILED!<br>";
+                document.body.appendChild(failed);
+                
+                var tryAgain = document.createElement("button");
+                tryAgain.setAttribute("class", "btn")
+                tryAgain.setAttribute("onClick", "window.location.reload();")
+                tryAgain.textContent = "Try Again";
+                failed.appendChild(tryAgain);
+            }
+        }, 1000);
+    }
+    
 }
 
 var questionIndex = 0;
@@ -114,10 +139,12 @@ function evalAnswer(event) {
     // Check if button clicked is the correct answer
     if (questionArray[questionIndex][buttonId][1]) {
         // Play Sound
+        // Display correct with timout
         console.log("correct!");
     } else {
         // Play Sound
         // subtract 10 seconds
+        // Display incorrect with timeout
         console.log("incorrect!")
     }
     questionIndex++;
