@@ -77,14 +77,14 @@ function quizTimer() {
         // Create display of timer
         var timerElement = document.createElement("p");
         timerElement.setAttribute("style", "text-align: end;")
-        timerElement.textContent = `You have ${seconds} seconds left!!`;
+        timerElement.textContent = `Time: ${seconds}`;
         document.body.prepend(timerElement);
         // Set timer with setInterval()
         var timer = setInterval(() => {
             if (timerRunning) {
                 if (seconds > 1) {
                     seconds--;
-                    timerElement.textContent = `You have ${seconds} seconds left!!`;
+                    timerElement.textContent = `Time: ${seconds}`;
                 } else {
                     // Clear page
                     removeChildren(document.body);
@@ -124,16 +124,26 @@ function loadNext() {
         var p = document.createElement("p");
         p.textContent = `Your final score is ${seconds}!`;
         container.appendChild(p);
+        // Create form
+        var form = document.createElement("form");
+        container.appendChild(form);
         // Add initals input field
         var initials = document.createElement("input");
         initials.setAttribute("type", "text");
         initials.setAttribute("placeholder", "Enter your initials");
-        container.appendChild(initials);
+        form.appendChild(initials);
         // Add submit Button
         var submitBtn = document.createElement("button");
         submitBtn.setAttribute("class", "btn");
         submitBtn.textContent = "Submit";
-        container.appendChild(submitBtn);
+        form.appendChild(submitBtn);
+        submitBtn.addEventListener("click", (event) => {
+            event.preventDefault();
+            // TODO: Store initials.value persistantly;
+            var HighScores = [initials.value, seconds]
+            console.log(HighScores);
+            loadHighScores(HighScores);
+        })
     } else {
     // Load in values for question header and 4 buttons. Use an array of objects. Object.keys(object) will give the keys
     var content = questionArray[questionIndex];
@@ -165,7 +175,6 @@ function evalAnswer(event) {
         // subtract 10 seconds
         seconds -= 10;
         // Display incorrect with timeout
-        console.log("Incorrect!")
     }
     // Show hr
     hr.setAttribute("style", "display: block;");
@@ -179,6 +188,46 @@ function evalAnswer(event) {
     questionIndex++;
     // call loadNext
     loadNext()
+}
+
+function loadHighScores(HighScores) {
+    var container = document.querySelector(".container");
+    
+    document.querySelector("p").remove();
+    document.querySelector("p").remove();
+    document.querySelector("form").remove();
+    var h1 = document.querySelector("h1");
+    h1.textContent = "High Scores";
+    // Create highscores table
+    var highTable = document.createElement("table");
+    highTable.setAttribute("style", "width: 100%;")
+    document.querySelector(".container").appendChild(highTable);
+    var row1 = document.createElement("tr");
+    row1.setAttribute("style", "background-color: lightgray;")
+    highTable.appendChild(row1);
+    var initials1 = document.createElement("td");
+    initials1.textContent = HighScores[0];
+    row1.appendChild(initials1);
+    var score1 = document.createElement("td");
+    score1.textContent = HighScores[1];
+    row1.appendChild(score1);
+
+    // Buttons
+    var restartBtn = document.createElement("button");
+    restartBtn.setAttribute("class", "btn");
+    restartBtn.setAttribute("id", "restart");
+    restartBtn.textContent = "Restart";
+    container.appendChild(restartBtn);
+    
+    var clearBtn = document.createElement("button");
+    clearBtn.setAttribute("class", "btn");
+    clearBtn.setAttribute("id", "clear");
+    clearBtn.textContent = "Clear HighScores";
+    container.appendChild(clearBtn);
+
+
+
+
 }
 
 
