@@ -1,13 +1,13 @@
-// TODO Undo Bootstrap
-
 // Start page is loaded at top 
 // Define start quiz button
 var startBtn = document.querySelector("#start");
 
 // instatiate question array
-var questionArray = [{question: "First Question", "button1": ["ans1", true], "button2": ["ans2", false], "button3": ["ans3", false], "button4": ["ans4", false]}, 
-                     {question: "Second Question", "button1": ["ans1", false], "button2": ["ans2", true], "button3": ["ans3", false], "button4": ["ans4", false]}, 
-                     {question: "Third Question", "button1": ["ans1", false], "button2": ["ans2", false], "button3": ["ans3", true], "button4": ["ans4", false]}
+var questionArray = [{question: "Commonly used datatypes do NOT include:", "button1": ["1. strings", false], "button2": ["2. booleans", false], "button3": ["3. alerts", true], "button4": ["4. numbers", false]}, 
+                     {question: "The condition of an if / else statement is enclosed within ______.", "button1": ["1. quotes", false], "button2": ["2. curly brackets", false], "button3": ["3. parentheses", true], "button4": ["4. square brackets", false]}, 
+                     {question: "Arrays in Javascript can be used to store _______.", "button1": ["1. numbers", false], "button2": ["2. arrays", false], "button3": ["3. booleans", false], "button4": ["4. All of the above", true]},
+                     {question: "String values are enclosed within ____ when being assigned to variables", "button1": ["1. double quotes", false], "button2": ["2. single quotes", false], "button3": ["3. back ticks", false], "button4": ["4. Any of the above", true]},
+                     {question: "JavaScript is generally written within an IDE. What does IDE stand for?", "button1": ["1. Independent Development Enviroment", false], "button2": ["2. Integrated Development Environment", true], "button3": ["3. Instant Developer Enclosure", false], "button4": ["4. Intentional Destiny Explorer", false]}
 ]
 
 // Function run by Start Quiz click
@@ -199,6 +199,7 @@ function loadHighScores(HighScores) {
     var h1 = document.querySelector("h1");
     h1.textContent = "High Scores";
     // Create highscores table
+    // TODO: Utilize persistant storage
     var highTable = document.createElement("table");
     highTable.setAttribute("style", "width: 100%;")
     document.querySelector(".container").appendChild(highTable);
@@ -218,15 +219,18 @@ function loadHighScores(HighScores) {
     restartBtn.setAttribute("id", "restart");
     restartBtn.textContent = "Restart";
     container.appendChild(restartBtn);
-    
+    restartBtn.addEventListener("click", () => {window.location.reload()})
+
     var clearBtn = document.createElement("button");
     clearBtn.setAttribute("class", "btn");
     clearBtn.setAttribute("id", "clear");
     clearBtn.textContent = "Clear HighScores";
     container.appendChild(clearBtn);
-
-
-
+    clearBtn.addEventListener("click", () => {
+        HighScores = [];
+        initials1.textContent = "";
+        score1.textContent = "";
+    })
 
 }
 
