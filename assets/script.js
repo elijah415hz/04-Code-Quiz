@@ -14,19 +14,16 @@ var questionArray = [{question: "First Question", "button1": ["ans1", true], "bu
 function startQuiz() {
     // remove start page
     var container = document.querySelector(".container");
-    removeChildren(container);
+    document.querySelector("p").remove();
+    document.querySelector("#start").remove();
     
     // Uncenter elements within container
     container.setAttribute("class", "container");
     
-    // create elements (Title and four buttons)
-    var header = document.createElement("h1");
-    header.textContent = "Question 1";
-    container.appendChild(header);
-    
+    // create four buttons 
     var button1 = document.createElement("button");
     button1.setAttribute("class", "btn block");
-    button1.setAttribute("id", "button1")
+    button1.setAttribute("id", "button1");
     container.appendChild(button1);
     button1.addEventListener("click", evalAnswer)
 
@@ -49,7 +46,18 @@ function startQuiz() {
     button4.setAttribute("class", "btn block");
     button4.setAttribute("id", "button4")
     container.appendChild(button4);
-    button4.addEventListener("click", evalAnswer)
+    button4.addEventListener("click", evalAnswer);
+
+    var container2 = document.createElement("div");
+    container2.setAttribute("class", "container");
+    document.body.appendChild(container2);
+    var hr = document.createElement("hr");
+    hr.setAttribute("style", "display: none;");
+    container2.appendChild(hr);
+    var correct = document.createElement("p");
+    correct.setAttribute("class", "textCenter")
+    correct.setAttribute("id", "correct");
+    container2.appendChild(correct);
 
     // Call loadNext() to load questions.
     loadNext();
@@ -106,14 +114,15 @@ function loadNext() {
         timerRunning = false;
         // Clear page of elements inside container
         var container = document.querySelector(".container")
-        removeChildren(container);
+        var buttons = document.querySelectorAll(".btn");
+        for (i=0; i<buttons.length; i++) {
+            buttons[i].remove();
+        }
         // Add header "All done!"
-        var header = document.createElement("h1");
-        header.textContent = "All done!";
-        container.appendChild(header);
-        // Add p
+        document.querySelector("h1").textContent = "All done!";
+        // Change text content of <p>
         var p = document.createElement("p");
-        p.innerHTML = `Your final score is ${seconds}!`
+        p.textContent = `Your final score is ${seconds}!`;
         container.appendChild(p);
         // Add initals input field
         var initials = document.createElement("input");
@@ -125,8 +134,6 @@ function loadNext() {
         submitBtn.setAttribute("class", "btn");
         submitBtn.textContent = "Submit";
         container.appendChild(submitBtn);
-
-
     } else {
     // Load in values for question header and 4 buttons. Use an array of objects. Object.keys(object) will give the keys
     var content = questionArray[questionIndex];
@@ -143,36 +150,29 @@ function loadNext() {
 function evalAnswer(event) {
     // get value of button from event
     var buttonId = event.target.id;
-    var container = document.querySelector(".container");
-        // TODO!!!! Refactor this so it is loaded in invisibly, then shown/filled on each click
+    var hr = document.querySelector("hr");
+    var correct = document.querySelector("#correct")
     
-        var hr = document.createElement("hr");
-        container.appendChild(hr);
-        var correct = document.createElement("p");
-        correct.setAttribute("class", "textCenter")
-        container.appendChild(correct);
     // Check if button clicked is the correct answer
     if (questionArray[questionIndex][buttonId][1]) {
         // Load success sound
         var audio = new Audio('assets/success.mp3');
         correct.textContent = "Correct!";
-        container.appendChild(correct);
-        // Display correct with timout
-        
-        console.log("correct!");
     } else {
         // Load failure sound
         var audio = new Audio('assets/failure.mp3');
         correct.textContent = "Incorrect!";
-        
         // subtract 10 seconds
+        seconds -= 10;
         // Display incorrect with timeout
-        console.log("incorrect!")
+        console.log("Incorrect!")
     }
+    // Show hr
+    hr.setAttribute("style", "display: block;");
     // Remove elements after 1 second
     setTimeout(() => {
-        hr.remove();
-        correct.remove();
+        hr.setAttribute("style", "display: none;");
+        correct.textContent = "";
     }, 1000);
     // play sound
     audio.play();
