@@ -1,9 +1,13 @@
 # 04-Code-Quiz
 
+Code-Quiz is a short quiz web application with questions about JavaScript. It dynamically generates each quiz question and answer set using an array of objects that can easily be updated to change the content and length of the quiz. 
+It incorporates a timer that subtracts 10 seconds from the remaining time left in the quiz for every wrong answer, and plays short sound effects as an audio cue for correct or incorrect answers. The number of seconds remaining on the timer becomes the user's score.
+At the end of the quiz it collects the user's initials and creates a leaderboard with persistant values that the user can clear.
+Code-Quiz is mobile responsive through the use of CSS media queries and responsive font sizing. 
+
+This site is deployed at https://elijah415hz.github.io/04-Code-Quiz/
 
 ## Assigment from the client
-As you proceed in your career as a web developer, you will probably be asked to complete a coding assessment, which is typically a combination of multiple-choice questions and interactive challenges. Build a timed code quiz with multiple-choice questions. This app will run in the browser and feature dynamically updated HTML and CSS powered by your JavaScript code. It will also feature a clean and polished user interface and be responsive, ensuring that it adapts to multiple screen sizes.
-
 ### User Story
 
 ```
