@@ -71,12 +71,13 @@ function removeChildren(parent) {
     }
 }
 
-var seconds = 20;
+var seconds = 60;
 var timerRunning = true;
 function quizTimer() {
         // Create display of timer
         var timerElement = document.createElement("p");
-        timerElement.setAttribute("style", "text-align: end;")
+        timerElement.setAttribute("style", "text-align: end; height: 2rem; margin: 0; padding; 0;")
+        document.querySelector("h1").setAttribute("style", "margin-top: 8rem")
         timerElement.textContent = `Time: ${seconds}`;
         document.body.prepend(timerElement);
         // Set timer with setInterval()
