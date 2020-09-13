@@ -20,6 +20,9 @@ p {
     font-size: 20px;
 }
 
+#correct {
+    margin: 0;
+}
 .btn {
     height: 30px;
     width: auto;

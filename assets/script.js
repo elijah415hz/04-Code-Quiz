@@ -1,6 +1,21 @@
 // Start page is loaded at top 
 // Define start quiz button
 var startBtn = document.querySelector("#start");
+// Define elements
+var container = document.querySelector(".container");
+var h1 = document.querySelector("h1")
+// Create invisible elements to display "Correct!" or "Incorrect"
+var container2 = document.createElement("div");
+container2.setAttribute("class", "container");
+document.body.appendChild(container2);
+var hr = document.createElement("hr");
+hr.setAttribute("style", "display: none;");
+container2.appendChild(hr);
+var correct = document.createElement("p");
+correct.setAttribute("class", "textCenter")
+correct.setAttribute("id", "correct");
+container2.appendChild(correct);
+
 
 // instatiate question array
 var questionArray = [{question: "Commonly used datatypes do NOT include:", "button1": ["1. strings", false], "button2": ["2. booleans", false], "button3": ["3. alerts", true], "button4": ["4. numbers", false]}, 
@@ -10,10 +25,9 @@ var questionArray = [{question: "Commonly used datatypes do NOT include:", "butt
                      {question: "JavaScript is generally written within an IDE. What does IDE stand for?", "button1": ["1. Independent Development Enviroment", false], "button2": ["2. Integrated Development Environment", true], "button3": ["3. Instant Developer Enclosure", false], "button4": ["4. Intentional Destiny Explorer", false]}
 ]
 
-// Function run by Start Quiz click
+// Function run by startBtn click
 function startQuiz() {
     // remove start page
-    var container = document.querySelector(".container");
     document.querySelector("p").remove();
     document.querySelector("#start").remove();
     
@@ -48,17 +62,6 @@ function startQuiz() {
     container.appendChild(button4);
     button4.addEventListener("click", evalAnswer);
 
-    var container2 = document.createElement("div");
-    container2.setAttribute("class", "container");
-    document.body.appendChild(container2);
-    var hr = document.createElement("hr");
-    hr.setAttribute("style", "display: none;");
-    container2.appendChild(hr);
-    var correct = document.createElement("p");
-    correct.setAttribute("class", "textCenter")
-    correct.setAttribute("id", "correct");
-    container2.appendChild(correct);
-
     // Call loadNext() to load questions.
     loadNext();
     // start timer
@@ -77,7 +80,7 @@ function quizTimer() {
         // Create display of timer
         var timerElement = document.createElement("p");
         timerElement.setAttribute("style", "text-align: end; height: 2rem; margin: 0; padding; 0;")
-        document.querySelector("h1").setAttribute("style", "margin-top: 8rem")
+        h1.setAttribute("style", "margin-top: 8rem")
         timerElement.textContent = `Time: ${seconds}`;
         document.body.prepend(timerElement);
         // Set timer with setInterval()
@@ -111,16 +114,16 @@ function quizTimer() {
 var questionIndex = 0;
 
 function loadNext() {
+    // If user just answered final question:
     if (questionIndex >= questionArray.length) {
         timerRunning = false;
         // Clear page of elements inside container
-        var container = document.querySelector(".container")
         var buttons = document.querySelectorAll(".btn");
         for (i=0; i<buttons.length; i++) {
             buttons[i].remove();
         }
         // Add header "All done!"
-        document.querySelector("h1").textContent = "All done!";
+        h1.textContent = "All done!";
         // Change text content of <p>
         var p = document.createElement("p");
         p.textContent = `Your final score is ${seconds}!`;
@@ -148,7 +151,7 @@ function loadNext() {
     } else {
     // Load in values for question header and 4 buttons. Use an array of objects. Object.keys(object) will give the keys
     var content = questionArray[questionIndex];
-    document.querySelector("h1").textContent = content.question;
+    h1.textContent = content.question;
     for (i=1; i<5; i++) {
         document.querySelector(`#button${i}`).textContent = content[`button${i}`][0];
     }
@@ -161,8 +164,6 @@ function loadNext() {
 function evalAnswer(event) {
     // get value of button from event
     var buttonId = event.target.id;
-    var hr = document.querySelector("hr");
-    var correct = document.querySelector("#correct")
     
     // Check if button clicked is the correct answer
     if (questionArray[questionIndex][buttonId][1]) {
@@ -197,7 +198,6 @@ function loadHighScores(HighScores) {
     document.querySelector("p").remove();
     document.querySelector("p").remove();
     document.querySelector("form").remove();
-    var h1 = document.querySelector("h1");
     h1.textContent = "High Scores";
     // Create highscores table
     // TODO: Utilize persistant storage
@@ -234,7 +234,6 @@ function loadHighScores(HighScores) {
     })
 
 }
-
 
 // Add event listener for Start Quiz
 startBtn.addEventListener("click", startQuiz)
