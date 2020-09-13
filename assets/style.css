@@ -3,7 +3,7 @@
 }
 
 .container {
-    width: 40vw;
+    width: 60vw;
     margin: 0 auto;
 }
 
@@ -13,7 +13,7 @@
 
 h1 {
     margin-top: 20vh;
-    font-size: 50px;
+    font-size: 40px;
 }
 
 p {
@@ -41,8 +41,12 @@ input {
     
 }
 
-@media (max-width: 576px) {
+@media screen and (max-width: 576px) {
     h1 {
-        margin-top: 10vh;
+        /* margin-top: 10vh; */
+        font-size: 10vw;
+    }
+    .container {
+        width: 90vw;
     }
 }
