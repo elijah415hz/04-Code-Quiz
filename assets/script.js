@@ -75,7 +75,7 @@ function removeChildren(parent) {
     }
 }
 
-var seconds = 1220;
+var seconds = 60;
 var timerRunning = true;
 function quizTimer() {
         // Create display of timer
@@ -164,8 +164,8 @@ function loadNext() {
 
 function evalAnswer(event) {
     // get value of button from event
+    event.target.blur()
     var buttonId = event.target.id;
-    
     // Check if button clicked is the correct answer
     if (questionArray[questionIndex][buttonId][1]) {
         // Load success sound

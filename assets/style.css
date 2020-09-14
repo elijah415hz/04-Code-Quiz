@@ -22,6 +22,7 @@ h1 {
 
 p {
     font-size: 20px;
+    margin: 0;
 }
 
 #correct {
@@ -34,13 +35,12 @@ p {
     font-size: 20px;
     border-radius: 5px;
     cursor: pointer;
-    margin: 10px 0px;
+    margin: 10px 10px 10px 0px;
     padding: .5em
 }
 
 .btn:focus {
-    background-color: lightblue;
-    border-color: white;
+    background-color: #4E63FF;
 }
 
 .block {
@@ -48,8 +48,11 @@ p {
 }
 
 input {
-    font-size: 20px;
+    margin-right: 20px;
+    padding: .5em;
     background-color: lightgray;
+    border-radius: 5px;
+    font-size: 20px;
     
 }
 
