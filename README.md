@@ -1,5 +1,8 @@
 # 04-Code-Quiz
 
+![Code Quiz Preview](assets/thumbnail_quiz.png)
+
+
 Code-Quiz is a short quiz web application with questions about JavaScript. It dynamically generates each quiz question and answer set using an array of objects that can easily be updated to change the content and length of the quiz. 
 It incorporates a timer that subtracts 10 seconds from the remaining time left in the quiz for every wrong answer, and plays short sound effects as an audio cue for correct or incorrect answers. The number of seconds remaining on the timer becomes the user's score.
 At the end of the quiz it collects the user's initials and creates a leaderboard with persistant values that the user can clear.
