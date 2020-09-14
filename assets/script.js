@@ -63,6 +63,7 @@ function startQuiz() {
     button4.addEventListener("click", evalAnswer);
 
     // Call loadNext() to load questions.
+    h1.setAttribute("id", "question")
     loadNext();
     // start timer
     quizTimer("start")
@@ -74,7 +75,7 @@ function removeChildren(parent) {
     }
 }
 
-var seconds = 60;
+var seconds = 1220;
 var timerRunning = true;
 function quizTimer() {
         // Create display of timer

@@ -16,6 +16,10 @@ h1 {
     font-size: 40px;
 }
 
+#question {
+    font-size: 30px;
+}
+
 p {
     font-size: 20px;
 }
@@ -24,14 +28,19 @@ p {
     margin: 0;
 }
 .btn {
-    height: 30px;
-    width: auto;
     background-color: #1E33E0;
+    text-align: left;
     color: white;
     font-size: 20px;
     border-radius: 5px;
     cursor: pointer;
-    margin: 2px;
+    margin: 10px 0px;
+    padding: .5em
+}
+
+.btn:focus {
+    background-color: lightblue;
+    border-color: white;
 }
 
 .block {
@@ -45,16 +54,29 @@ input {
 }
 
 @media screen and (max-width: 576px) {
+    #question {
+        font-size: 6vw;
+    }
     h1 {
         font-size: 10vw;
     }
     .container {
         width: 90vw;
     }
+    .btn {
+        font-size: 5vw;
+        margin: .25em 0;
+    }
 }
 
 @media screen and (min-width: 900px) {
     .container {
         width: 40vw;
+    }
+}
+
+@media (pointer: coarse) {
+    .btn {
+        margin: 1em 0;
     }
 }
