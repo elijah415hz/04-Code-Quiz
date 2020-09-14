@@ -145,9 +145,17 @@ function loadNext() {
         submitBtn.addEventListener("click", (event) => {
             event.preventDefault();
             // TODO: Store initials.value persistantly;
-            var HighScores = [initials.value, seconds]
-            console.log(HighScores);
-            loadHighScores(HighScores);
+            var HighScore = [initials.value, seconds];
+            var storedHighScores = localStorage.getItem("HighScores");
+            if (storedHighScores) {
+                storedHighScores = JSON.parse(storedHighScores);
+                storedHighScores.push(HighScore);
+            } else {
+                storedHighScores = [HighScore];
+            }
+            console.log(HighScore);
+            localStorage.setItem("HighScores", JSON.stringify(storedHighScores))
+            loadHighScores(storedHighScores);
         })
     } else {
     // Load in values for question header and 4 buttons. Use an array of objects. Object.keys(object) will give the keys
@@ -193,7 +201,8 @@ function evalAnswer(event) {
     loadNext()
 }
 
-function loadHighScores(HighScores) {
+// Called 
+function loadHighScores(storedHighScores) {
     var container = document.querySelector(".container");
     
     document.querySelector("p").remove();
@@ -202,18 +211,23 @@ function loadHighScores(HighScores) {
     h1.textContent = "High Scores";
     // Create highscores table
     // TODO: Utilize persistant storage
+    
     var highTable = document.createElement("table");
     highTable.setAttribute("style", "width: 100%;")
     document.querySelector(".container").appendChild(highTable);
-    var row1 = document.createElement("tr");
-    row1.setAttribute("style", "background-color: lightgray;")
-    highTable.appendChild(row1);
-    var initials1 = document.createElement("td");
-    initials1.textContent = HighScores[0];
-    row1.appendChild(initials1);
-    var score1 = document.createElement("td");
-    score1.textContent = HighScores[1];
-    row1.appendChild(score1);
+    
+
+    for (i=0; i<storedHighScores.length; i++) {
+        var row = document.createElement("tr");
+        row.setAttribute("style", "background-color: lightgray;")
+        highTable.appendChild(row);
+        var initials = document.createElement("td");
+        initials.textContent = storedHighScores[i][0];
+        row.appendChild(initials);
+        var score = document.createElement("td");
+        score.textContent = storedHighScores[i][1];
+        row.appendChild(score);
+    }
 
     // Buttons
     var restartBtn = document.createElement("button");
@@ -229,12 +243,16 @@ function loadHighScores(HighScores) {
     clearBtn.textContent = "Clear HighScores";
     container.appendChild(clearBtn);
     clearBtn.addEventListener("click", () => {
-        HighScores = [];
-        initials1.textContent = "";
-        score1.textContent = "";
+        localStorage.setItem("HighScores", "");
+        removeChildren(highTable);
+        var row = document.createElement("tr");
+        row.setAttribute("style", "background-color: lightgray;")
+        highTable.appendChild(row);
     })
 
 }
+
+
 
 // Add event listener for Start Quiz
 startBtn.addEventListener("click", startQuiz)
