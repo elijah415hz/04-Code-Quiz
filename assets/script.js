@@ -243,14 +243,16 @@ function submitHighScore(initials) {
             console.log("length == 1")
             if (seconds >= storedHighScores[0][1]) {
                 storedHighScores.unshift(HighScore);
+                newHighScore = true;
             } else {
-                storedHighScores.unshift(HighScore);
+                storedHighScores.push(HighScore);
             } 
         
         }
     // If no stored high scores exist:
     } else {
             storedHighScores = [HighScore];
+            newHighScore = true;
     }
     localStorage.setItem("HighScores", JSON.stringify(storedHighScores))
     loadHighScores(storedHighScores);
@@ -273,7 +275,7 @@ function loadHighScores(storedHighScores) {
         var h4 = document.createElement("h4");
         h4.style.color = "red";
         h4.textContent = "New High Score!!!";
-        highTable.prepend(h4);
+        container.prepend(h4);
         
 }
 
