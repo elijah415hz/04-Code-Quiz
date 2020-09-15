@@ -4,6 +4,7 @@ var startBtn = document.querySelector("#start");
 // Define elements
 var container = document.querySelector(".container");
 var h1 = document.querySelector("h1")
+
 // Create invisible elements to display "Correct!" or "Incorrect"
 var container2 = document.createElement("div");
 container2.setAttribute("class", "container");
@@ -98,7 +99,7 @@ function quizTimer() {
                     failed.setAttribute("style", "font-size: 100px; color: red; text-align: center;")
                     failed.innerHTML = "FAILED!<br>";
                     document.body.appendChild(failed);
-                    
+                    // Try again button
                     var tryAgain = document.createElement("button");
                     tryAgain.setAttribute("class", "btn")
                     tryAgain.setAttribute("onClick", "window.location.reload();")
@@ -117,80 +118,7 @@ var questionIndex = 0;
 function loadNext() {
     // If user just answered final question:
     if (questionIndex >= questionArray.length) {
-        timerRunning = false;
-        // Clear page of elements inside container
-        var buttons = document.querySelectorAll(".btn");
-        for (i=0; i<buttons.length; i++) {
-            buttons[i].remove();
-        }
-        // Add header "All done!"
-        h1.textContent = "All done!";
-        // Change text content of <p>
-        var p = document.createElement("p");
-        p.textContent = `Your final score is ${seconds}!`;
-        container.appendChild(p);
-        // Create form
-        var form = document.createElement("form");
-        container.appendChild(form);
-        // Add initals input field
-        var initials = document.createElement("input");
-        initials.setAttribute("type", "text");
-        initials.setAttribute("placeholder", "Enter your initials");
-        form.appendChild(initials);
-        // Add submit Button
-        var submitBtn = document.createElement("button");
-        submitBtn.setAttribute("class", "btn");
-        submitBtn.textContent = "Submit";
-        form.appendChild(submitBtn);
-        submitBtn.addEventListener("click", (event) => {
-            event.preventDefault();
-            // Store initials.value persistantly;
-            // TODO: Fix this!!!
-            var HighScore = [initials.value, seconds];
-            var storedHighScores = localStorage.getItem("HighScores");
-            if (storedHighScores) {
-                console.log("Exists :" + storedHighScores)
-            storedHighScores = JSON.parse(storedHighScores);
-            // console.log(storedHighScores.length)
-            
-                if (storedHighScores.length > 1) {
-                    console.log("length > 1")
-                    // Place the score storedHighScores is ordered high to low
-                    for (i=0; i<(storedHighScores.length-1); i++) {
-                        if ((i == 0) && (seconds >= storedHighScores[i][1])) {
-                            storedHighScores.unshift(HighScore);
-                            console.log("unshift");
-                            break;
-                        } else if ((seconds <= storedHighScores[i][1]) && (seconds >= storedHighScores[i+1][1])) {
-                            storedHighScores.splice((i+1), 0, HighScore);
-                            console.log("storedHighScores");
-                            break;
-                        } else if (i == (storedHighScores.length - 2)) {
-                            storedHighScores.push(HighScore);
-                            console.log("push");
-                            break;
-                        }
-                    }
-                } else if (storedHighScores.length == 1) {
-                    console.log("length == 1")
-                    if (seconds <= storedHighScores[0][1]) {
-                        storedHighScores.push(HighScore);
-                        console.log("pushing")
-                    } else {
-                        storedHighScores.unshift(HighScore);
-                        console.log("unshifting" + storedHighScores)
-                    } 
-                
-                }
-            } else {
-                    console.log("Doesn't exist")
-                    storedHighScores = [HighScore];
-            }
-            // console.log(storedHighScores);
-            // console.log(HighScore);
-            localStorage.setItem("HighScores", JSON.stringify(storedHighScores))
-            loadHighScores(storedHighScores);
-        })
+        loadDone();
     } else {
     // Load in values for question header and 4 buttons. Use an array of objects. Object.keys(object) will give the keys
     var content = questionArray[questionIndex];
@@ -235,6 +163,79 @@ function evalAnswer(event) {
     loadNext()
 }
 
+var newHighScore = false;
+function loadDone() {
+    timerRunning = false;
+    document.querySelector("p").textContent = `Time: ${seconds}`;
+    // Clear page of elements inside container
+    var buttons = document.querySelectorAll(".btn");
+    for (i=0; i<buttons.length; i++) {
+        buttons[i].remove();
+    }
+    // Add header "All done!"
+    h1.textContent = "All done!";
+    // Change text content of <p>
+    var p = document.createElement("p");
+    p.textContent = `Your final score is ${seconds}!`;
+    container.appendChild(p);
+    // Create form
+    var form = document.createElement("form");
+    container.appendChild(form);
+    // Add initals input field
+    var initials = document.createElement("input");
+    initials.setAttribute("type", "text");
+    initials.setAttribute("placeholder", "Enter your initials");
+    form.appendChild(initials);
+    // Add submit Button
+    var submitBtn = document.createElement("button");
+    submitBtn.setAttribute("class", "btn");
+    submitBtn.textContent = "Submit";
+    form.appendChild(submitBtn);
+    // Add event listener
+    submitBtn.addEventListener("click", (event) => {
+        event.preventDefault();
+        // Store  persistantly;
+        var HighScore = [initials.value, seconds];
+        var storedHighScores = localStorage.getItem("HighScores");
+        // If there was anything in local storage:
+        if (storedHighScores) {
+            storedHighScores = JSON.parse(storedHighScores);
+            // Place the score storedHighScores is ordered high to low
+            // If there are multiple high scores already stored
+            if (storedHighScores.length > 1) {
+                for (i=0; i<(storedHighScores.length-1); i++) {
+                    if (seconds >= storedHighScores[0][1]) {
+                        storedHighScores.unshift(HighScore);
+                        newHighScore = true;
+                        break;
+                    } else if ((seconds <= storedHighScores[i][1]) && (seconds >= storedHighScores[i+1][1])) {
+                        storedHighScores.splice((i+1), 0, HighScore);
+                        break;
+                    } else if (i == (storedHighScores.length - 2)) {
+                        storedHighScores.push(HighScore);
+                        break;
+                    }
+                }
+            // If there is only once stored    
+            } else { 
+                console.log("length == 1")
+                if (seconds >= storedHighScores[0][1]) {
+                    storedHighScores.unshift(HighScore);
+                } else {
+                    storedHighScores.unshift(HighScore);
+                } 
+            
+            }
+        // If no stored high scores exist:
+        } else {
+                storedHighScores = [HighScore];
+        }
+        localStorage.setItem("HighScores", JSON.stringify(storedHighScores))
+        loadHighScores(storedHighScores);
+    })
+}
+
+
 // Called 
 function loadHighScores(storedHighScores) {
     var container = document.querySelector(".container");
@@ -244,12 +245,17 @@ function loadHighScores(storedHighScores) {
     document.querySelector("form").remove();
     h1.textContent = "High Scores";
     // Create highscores table
-    // Utilize persistant storage
-    
     var highTable = document.createElement("table");
     document.querySelector(".container").appendChild(highTable);
     highTable.setAttribute("style", "background-color: #4E63FF; width: 100%; color: white;")
 
+    if (newHighScore) {
+        var h4 = document.createElement("h4");
+        h4.style.color = "red";
+        h4.textContent = "New High Score!!!";
+        highTable.prepend(h4);
+        
+}
 
     for (i=0; i<storedHighScores.length; i++) {
         var row = document.createElement("tr");
