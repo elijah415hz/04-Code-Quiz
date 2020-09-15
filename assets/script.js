@@ -144,16 +144,50 @@ function loadNext() {
         form.appendChild(submitBtn);
         submitBtn.addEventListener("click", (event) => {
             event.preventDefault();
-            // TODO: Store initials.value persistantly;
+            // Store initials.value persistantly;
+            // TODO: Fix this!!!
             var HighScore = [initials.value, seconds];
             var storedHighScores = localStorage.getItem("HighScores");
             if (storedHighScores) {
-                storedHighScores = JSON.parse(storedHighScores);
-                storedHighScores.push(HighScore);
+                console.log("Exists :" + storedHighScores)
+            storedHighScores = JSON.parse(storedHighScores);
+            // console.log(storedHighScores.length)
+            
+                if (storedHighScores.length > 1) {
+                    console.log("length > 1")
+                    // Place the score storedHighScores is ordered high to low
+                    for (i=0; i<(storedHighScores.length-1); i++) {
+                        if ((i == 0) && (seconds >= storedHighScores[i][1])) {
+                            storedHighScores.unshift(HighScore);
+                            console.log("unshift");
+                            break;
+                        } else if ((seconds <= storedHighScores[i][1]) && (seconds >= storedHighScores[i+1][1])) {
+                            storedHighScores.splice((i+1), 0, HighScore);
+                            console.log("storedHighScores");
+                            break;
+                        } else if (i == (storedHighScores.length - 2)) {
+                            storedHighScores.push(HighScore);
+                            console.log("push");
+                            break;
+                        }
+                    }
+                } else if (storedHighScores.length == 1) {
+                    console.log("length == 1")
+                    if (seconds <= storedHighScores[0][1]) {
+                        storedHighScores.push(HighScore);
+                        console.log("pushing")
+                    } else {
+                        storedHighScores.unshift(HighScore);
+                        console.log("unshifting" + storedHighScores)
+                    } 
+                
+                }
             } else {
-                storedHighScores = [HighScore];
+                    console.log("Doesn't exist")
+                    storedHighScores = [HighScore];
             }
-            console.log(HighScore);
+            // console.log(storedHighScores);
+            // console.log(HighScore);
             localStorage.setItem("HighScores", JSON.stringify(storedHighScores))
             loadHighScores(storedHighScores);
         })
@@ -210,22 +244,21 @@ function loadHighScores(storedHighScores) {
     document.querySelector("form").remove();
     h1.textContent = "High Scores";
     // Create highscores table
-    // TODO: Utilize persistant storage
+    // Utilize persistant storage
     
     var highTable = document.createElement("table");
-    highTable.setAttribute("style", "width: 100%;")
     document.querySelector(".container").appendChild(highTable);
-    
+    highTable.setAttribute("style", "background-color: #4E63FF; width: 100%; color: white;")
+
 
     for (i=0; i<storedHighScores.length; i++) {
         var row = document.createElement("tr");
-        row.setAttribute("style", "background-color: lightgray;")
         highTable.appendChild(row);
-        var initials = document.createElement("td");
-        initials.textContent = storedHighScores[i][0];
-        row.appendChild(initials);
         var score = document.createElement("td");
-        score.textContent = storedHighScores[i][1];
+        score.textContent = `${i+1}. ${storedHighScores[i][0]}-${storedHighScores[i][1]}`;
+        if (i%2 === 0) {
+            row.setAttribute("style", "background-color: #1E43DF;")
+        }
         row.appendChild(score);
     }
 
@@ -246,8 +279,7 @@ function loadHighScores(storedHighScores) {
         localStorage.setItem("HighScores", "");
         removeChildren(highTable);
         var row = document.createElement("tr");
-        row.setAttribute("style", "background-color: lightgray;")
-        highTable.appendChild(row);
+        highTable.setAttribute("style", "height: 1.5em;");
     })
 
 }
