@@ -4,6 +4,9 @@ var startBtn = document.querySelector("#start");
 // Define elements
 var container = document.querySelector(".container");
 var h1 = document.querySelector("h1")
+// Load sounds
+var successAudio = new Audio('assets/success.mp3');
+var failureAudio = new Audio('assets/failure.mp3');
 
 // Create invisible elements to display "Correct!" or "Incorrect"
 var container2 = document.createElement("div");
@@ -45,29 +48,29 @@ function startQuiz() {
     
     var button2 = document.createElement("button");
     button2.setAttribute("class", "btn block");
-    button2.setAttribute("id", "button2")
+    button2.setAttribute("id", "button2");
     container.appendChild(button2);
     button2.addEventListener("click", evalAnswer)
 
     
     var button3 = document.createElement("button");
     button3.setAttribute("class", "btn block");
-    button3.setAttribute("id", "button3")
+    button3.setAttribute("id", "button3");
     container.appendChild(button3);
     button3.addEventListener("click", evalAnswer)
 
     
     var button4 = document.createElement("button");
     button4.setAttribute("class", "btn block");
-    button4.setAttribute("id", "button4")
+    button4.setAttribute("id", "button4");
     container.appendChild(button4);
     button4.addEventListener("click", evalAnswer);
 
     // Call loadNext() to load questions.
-    h1.setAttribute("id", "question")
+    h1.setAttribute("id", "question");
     loadNext();
     // start timer
-    quizTimer("start")
+    quizTimer("start");
 }
 
 function removeChildren(parent) {
@@ -81,8 +84,8 @@ var timerRunning = true;
 function quizTimer() {
         // Create display of timer
         var timerElement = document.createElement("p");
-        timerElement.setAttribute("style", "text-align: end; height: 2rem; margin: 0; padding; 0;")
-        h1.setAttribute("style", "margin-top: 8rem")
+        timerElement.setAttribute("style", "text-align: end; height: 2rem; margin: 0; padding; 0;");
+        h1.setAttribute("style", "margin-top: 8rem");
         timerElement.textContent = `Time: ${seconds}`;
         document.body.prepend(timerElement);
         // Set timer with setInterval()
@@ -101,11 +104,11 @@ function quizTimer() {
                     document.body.appendChild(failed);
                     // Try again button
                     var tryAgain = document.createElement("button");
-                    tryAgain.setAttribute("class", "btn")
-                    tryAgain.setAttribute("onClick", "window.location.reload();")
+                    tryAgain.setAttribute("class", "btn");
+                    tryAgain.setAttribute("onClick", "window.location.reload();");
                     tryAgain.textContent = "Try Again";
                     failed.appendChild(tryAgain);
-                    clearInterval(timer)
+                    clearInterval(timer);
                 }
             } else {
                 clearInterval(timer);
@@ -126,44 +129,43 @@ function loadNext() {
     for (i=1; i<5; i++) {
         document.querySelector(`#button${i}`).textContent = content[`button${i}`][0];
     }
-    // Set which button is correct. Correct/incorrect stored in key values. Set class?
     // On any button press call evalAnswer()
-    // Increment questionIndex
     }
 }
 
 function evalAnswer(event) {
     // get value of button from event
-    event.target.blur()
+    event.target.blur();
     var buttonId = event.target.id;
     // Check if button clicked is the correct answer
     if (questionArray[questionIndex][buttonId][1]) {
-        // Load success sound
-        var audio = new Audio('assets/success.mp3');
+        // play sound
+        successAudio.play();
+        // set text to display below buttons
         correct.textContent = "Correct!";
     } else {
-        // Load failure sound
-        var audio = new Audio('assets/failure.mp3');
+        // play sound
+        failureAudio.play();
+        // set text to display below buttons
         correct.textContent = "Incorrect!";
         // subtract 10 seconds
         seconds -= 10;
-        // Display incorrect with timeout
     }
     // Show hr
     hr.setAttribute("style", "display: block;");
-    // Remove elements after 1 second
+    // Hide elements after 1 second
     setTimeout(() => {
         hr.setAttribute("style", "display: none;");
         correct.textContent = "";
     }, 1000);
-    // play sound
-    audio.play();
     questionIndex++;
     // call loadNext
     loadNext()
 }
 
+// newHighScore will be set to true below if the new score is a high score
 var newHighScore = false;
+
 function loadDone() {
     timerRunning = false;
     document.querySelector("p").textContent = `Time: ${seconds}`;
@@ -192,51 +194,68 @@ function loadDone() {
     submitBtn.textContent = "Submit";
     form.appendChild(submitBtn);
     // Add event listener
-    submitBtn.addEventListener("click", (event) => {
+    submitBtn.addEventListener("click", function(event) {
+        // prevent page refresh
         event.preventDefault();
-        // Store  persistantly;
-        var HighScore = [initials.value, seconds];
-        var storedHighScores = localStorage.getItem("HighScores");
-        // If there was anything in local storage:
-        if (storedHighScores) {
-            storedHighScores = JSON.parse(storedHighScores);
-            // Place the score storedHighScores is ordered high to low
-            // If there are multiple high scores already stored
-            if (storedHighScores.length > 1) {
-                for (i=0; i<(storedHighScores.length-1); i++) {
-                    if (seconds >= storedHighScores[0][1]) {
-                        storedHighScores.unshift(HighScore);
-                        newHighScore = true;
-                        break;
-                    } else if ((seconds <= storedHighScores[i][1]) && (seconds >= storedHighScores[i+1][1])) {
-                        storedHighScores.splice((i+1), 0, HighScore);
-                        break;
-                    } else if (i == (storedHighScores.length - 2)) {
-                        storedHighScores.push(HighScore);
-                        break;
-                    }
-                }
-            // If there is only once stored    
-            } else { 
-                console.log("length == 1")
-                if (seconds >= storedHighScores[0][1]) {
-                    storedHighScores.unshift(HighScore);
-                } else {
-                    storedHighScores.unshift(HighScore);
-                } 
-            
-            }
-        // If no stored high scores exist:
-        } else {
-                storedHighScores = [HighScore];
-        }
-        localStorage.setItem("HighScores", JSON.stringify(storedHighScores))
-        loadHighScores(storedHighScores);
+        // deselect button
+        event.target.blur();
+        submitHighScore(initials);
     })
 }
 
+function submitHighScore(initials) {
+    // If no initials entered, go no further
+    if (!initials.value) {
+        correct.textContent = "Please enter your initials";
+        // Show hr
+        hr.setAttribute("style", "display: block;");
+        // Hide elements after 1 second
+        setTimeout(() => {
+            hr.setAttribute("style", "display: none;");
+            correct.textContent = "";
+        }, 1000);
+        return;
+    }
+    // Store  persistantly;
+    var HighScore = [initials.value, seconds];
+    var storedHighScores = localStorage.getItem("HighScores");
+    // If there was anything in local storage:
+    if (storedHighScores) {
+        storedHighScores = JSON.parse(storedHighScores);
+        // Place the score storedHighScores is ordered high to low
+        // If there are multiple high scores already stored
+        if (storedHighScores.length > 1) {
+            for (i=0; i<(storedHighScores.length-1); i++) {
+                if (seconds >= storedHighScores[0][1]) {
+                    storedHighScores.unshift(HighScore);
+                    newHighScore = true;
+                    break;
+                } else if ((seconds <= storedHighScores[i][1]) && (seconds >= storedHighScores[i+1][1])) {
+                    storedHighScores.splice((i+1), 0, HighScore);
+                    break;
+                } else if (i == (storedHighScores.length - 2)) {
+                    storedHighScores.push(HighScore);
+                    break;
+                }
+            }
+        // If there is only one stored    
+        } else { 
+            console.log("length == 1")
+            if (seconds >= storedHighScores[0][1]) {
+                storedHighScores.unshift(HighScore);
+            } else {
+                storedHighScores.unshift(HighScore);
+            } 
+        
+        }
+    // If no stored high scores exist:
+    } else {
+            storedHighScores = [HighScore];
+    }
+    localStorage.setItem("HighScores", JSON.stringify(storedHighScores))
+    loadHighScores(storedHighScores);
+}
 
-// Called 
 function loadHighScores(storedHighScores) {
     var container = document.querySelector(".container");
     
@@ -249,6 +268,7 @@ function loadHighScores(storedHighScores) {
     document.querySelector(".container").appendChild(highTable);
     highTable.setAttribute("style", "background-color: #4E63FF; width: 100%; color: white;")
 
+    // If this is a new high score, display message
     if (newHighScore) {
         var h4 = document.createElement("h4");
         h4.style.color = "red";
