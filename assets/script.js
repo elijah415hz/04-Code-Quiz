@@ -39,33 +39,14 @@ function startQuiz() {
     container.setAttribute("class", "container");
     
     // create four buttons 
-    var button1 = document.createElement("button");
-    button1.setAttribute("class", "btn block");
-    button1.setAttribute("id", "button1");
-    container.appendChild(button1);
-    button1.addEventListener("click", evalAnswer)
-
-    
-    var button2 = document.createElement("button");
-    button2.setAttribute("class", "btn block");
-    button2.setAttribute("id", "button2");
-    container.appendChild(button2);
-    button2.addEventListener("click", evalAnswer)
-
-    
-    var button3 = document.createElement("button");
-    button3.setAttribute("class", "btn block");
-    button3.setAttribute("id", "button3");
-    container.appendChild(button3);
-    button3.addEventListener("click", evalAnswer)
-
-    
-    var button4 = document.createElement("button");
-    button4.setAttribute("class", "btn block");
-    button4.setAttribute("id", "button4");
-    container.appendChild(button4);
-    button4.addEventListener("click", evalAnswer);
-
+    for (var i=1; i<5; i++) {
+        var button = document.createElement("button");
+        button.setAttribute("class", "btn block");
+        button.setAttribute("id", `button${i}`);
+        container.appendChild(button);
+        button.addEventListener("click", evalAnswer)
+    }
+   
     // Call loadNext() to load questions.
     h1.setAttribute("id", "question");
     loadNext();
@@ -275,7 +256,7 @@ function loadHighScores(storedHighScores) {
         var h4 = document.createElement("h4");
         h4.style.color = "red";
         h4.textContent = "New High Score!!!";
-        container.prepend(h4);
+        container.appendChild(h4);
         
 }
 
