@@ -1,14 +1,17 @@
-// Start page is loaded at top 
 // Define start quiz button
 var startBtn = document.querySelector("#start");
+startBtn.addEventListener("click", startQuiz)
+
 // Define elements
 var container = document.querySelector(".container");
 var h1 = document.querySelector("h1")
+
 // Load sounds
 var successAudio = new Audio('assets/success.mp3');
 var failureAudio = new Audio('assets/failure.mp3');
 
 // Create invisible elements to display "Correct!" or "Incorrect"
+// Didn't hardcode these because the hr appears for a second on page load
 var container2 = document.createElement("div");
 container2.setAttribute("class", "container");
 document.body.appendChild(container2);
@@ -20,14 +23,27 @@ correct.setAttribute("class", "textCenter")
 correct.setAttribute("id", "correct");
 container2.appendChild(correct);
 
-
-// instatiate question array
+// Define global variables ============================================
+// newHighScore will be set to true below if the new score is a high score
+var newHighScore = false; // Used by submitHighScore() & loadHighScores()
+var seconds = 60; // Used by quizTimer() & evalAnswer()
+var timerRunning = true; // Used by quizTimer() & loadDone()
+var questionIndex = 0; // loadNext() & evalAnswer()
+// Question array
 var questionArray = [{question: "Commonly used datatypes do NOT include:", "button1": ["1. strings", false], "button2": ["2. booleans", false], "button3": ["3. alerts", true], "button4": ["4. numbers", false]}, 
                      {question: "The condition of an if / else statement is enclosed within ______.", "button1": ["1. quotes", false], "button2": ["2. curly brackets", false], "button3": ["3. parentheses", true], "button4": ["4. square brackets", false]}, 
                      {question: "Arrays in Javascript can be used to store _______.", "button1": ["1. numbers", false], "button2": ["2. arrays", false], "button3": ["3. booleans", false], "button4": ["4. All of the above", true]},
                      {question: "String values are enclosed within ____ when being assigned to variables", "button1": ["1. double quotes", false], "button2": ["2. single quotes", false], "button3": ["3. back ticks", false], "button4": ["4. Any of the above", true]},
                      {question: "JavaScript is generally written within an IDE. What does IDE stand for?", "button1": ["1. Independent Development Enviroment", false], "button2": ["2. Integrated Development Environment", true], "button3": ["3. Instant Developer Enclosure", false], "button4": ["4. Intentional Destiny Explorer", false]}
 ]
+// ====================================================================
+
+// Helper function to remove all elements within a specified element
+function removeChildren(parent) {
+    while (parent.firstChild) {
+        parent.removeChild(parent.firstChild);
+    }
+}
 
 // Function run by startBtn click
 function startQuiz() {
@@ -38,7 +54,7 @@ function startQuiz() {
     // Uncenter elements within container
     container.setAttribute("class", "container");
     
-    // create four buttons 
+    // Create four buttons 
     for (var i=1; i<5; i++) {
         var button = document.createElement("button");
         button.setAttribute("class", "btn block");
@@ -54,14 +70,6 @@ function startQuiz() {
     quizTimer("start");
 }
 
-function removeChildren(parent) {
-    while (parent.firstChild) {
-        parent.removeChild(parent.firstChild);
-    }
-}
-
-var seconds = 60;
-var timerRunning = true;
 function quizTimer() {
         // Create display of timer
         var timerElement = document.createElement("p");
@@ -97,7 +105,6 @@ function quizTimer() {
         }, 1000);
 }     
 
-var questionIndex = 0;
 
 function loadNext() {
     // If user just answered final question:
@@ -144,8 +151,6 @@ function evalAnswer(event) {
     loadNext()
 }
 
-// newHighScore will be set to true below if the new score is a high score
-var newHighScore = false;
 
 function loadDone() {
     timerRunning = false;
@@ -197,13 +202,14 @@ function submitHighScore(initials) {
         }, 1000);
         return;
     }
-    // Store  persistantly;
+// Store  persistantly;
     var HighScore = [initials.value, seconds];
+    // Get scores from storage
     var storedHighScores = localStorage.getItem("HighScores");
-    // If there was anything in local storage:
+    // If there was anything in local storage
+    // Place the score storedHighScores is ordered high to low
     if (storedHighScores) {
         storedHighScores = JSON.parse(storedHighScores);
-        // Place the score storedHighScores is ordered high to low
         // If there are multiple high scores already stored
         if (storedHighScores.length > 1) {
             for (i=0; i<(storedHighScores.length-1); i++) {
@@ -256,44 +262,43 @@ function loadHighScores(storedHighScores) {
         var h4 = document.createElement("h4");
         h4.style.color = "red";
         h4.textContent = "New High Score!!!";
-        container.appendChild(h4);
-        
-}
+        container.appendChild(h4);     
+    }
 
+    // Load high scores into the table
     for (i=0; i<storedHighScores.length; i++) {
         var row = document.createElement("tr");
         highTable.appendChild(row);
         var score = document.createElement("td");
         score.textContent = `${i+1}. ${storedHighScores[i][0]}-${storedHighScores[i][1]}`;
+        // alternate colors by row
         if (i%2 === 0) {
             row.setAttribute("style", "background-color: #1E43DF;")
         }
         row.appendChild(score);
     }
 
-    // Buttons
+    // Restart Button
     var restartBtn = document.createElement("button");
     restartBtn.setAttribute("class", "btn");
     restartBtn.setAttribute("id", "restart");
     restartBtn.textContent = "Restart";
     container.appendChild(restartBtn);
+    // reload function has to be wrapped in an anonymous function, otherwise
+    // if will fire as the event listener is added.
     restartBtn.addEventListener("click", () => {window.location.reload()})
 
+    // Clear High Scores
     var clearBtn = document.createElement("button");
     clearBtn.setAttribute("class", "btn");
     clearBtn.setAttribute("id", "clear");
     clearBtn.textContent = "Clear HighScores";
     container.appendChild(clearBtn);
     clearBtn.addEventListener("click", () => {
+        // delete from storage
         localStorage.setItem("HighScores", "");
+        // clear high scores from highTable
         removeChildren(highTable);
-        var row = document.createElement("tr");
-        highTable.setAttribute("style", "height: 1.5em;");
     })
 
 }
-
-
-
-// Add event listener for Start Quiz
-startBtn.addEventListener("click", startQuiz)
