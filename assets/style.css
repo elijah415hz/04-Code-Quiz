@@ -28,34 +28,43 @@ p {
 #correct {
     margin: 0;
 }
+
 .btn {
+    /* box model */
+    margin: 10px 10px 10px 0px;
+    padding: .5em;
+    border-radius: 5px;
+    /* typography */
     background-color: #1E33E0;
     text-align: left;
     color: white;
     font-size: 20px;
-    border-radius: 5px;
+    /* Change mouse to pointer finger on hover */
     cursor: pointer;
-    margin: 10px 10px 10px 0px;
-    padding: .5em
 }
 
+/* Change the button color when clicked or selected */
 .btn:focus {
     background-color: #4E63FF;
 }
 
+/* Make certain buttons block instead of inline */
 .block {
     display: block;
 }
 
 input {
+    /* box model */
     margin-right: 20px;
     padding: .5em;
-    background-color: lightgray;
     border-radius: 5px;
+    /* typography */
+    background-color: lightgray;
     font-size: 20px;
-    
 }
 
+
+/* Mobile response */
 @media screen and (max-width: 576px) {
     #question {
         font-size: 6vw;
@@ -78,6 +87,7 @@ input {
     }
 }
 
+/* Space buttons out on touch screens for fat fingers */
 @media (pointer: coarse) {
     .btn {
         margin: 1em 0;
